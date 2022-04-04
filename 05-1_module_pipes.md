@@ -77,7 +77,8 @@ OR
 ng g p movie-image
 ```
 
-go to `projects/movies/src/app/movie-image.pipe.ts`
+<details>
+    <summary>show result</summary>
 
 ```ts
 @Pipe({
@@ -93,10 +94,9 @@ export class MovieImagePipe implements PipeTransform {
     }
 }
 ```
+</details>
 
 ## use pipe in movie-card
-
-go to `projects/movies/src/app/movie-card/movie-card.component.html`
 
 ```html
 <!-- movie-card.component.html -->
@@ -127,6 +127,9 @@ Also move their files into the new `movie` folder
 * `MovieCardComponent`
 * `MovieImagePipe`
 
+<details>
+    <summary>show result</summary>
+
 ```ts
 // movie/movie.module.ts
 
@@ -137,6 +140,8 @@ Also move their files into the new `movie` folder
 })
 export class MovieModule {}
 ```
+
+</details>
 
 ## introduce TiltModule
 
@@ -150,6 +155,9 @@ move the `TiltDirective` to the `TiltModule` by adding them to the `declarations
 property of the `TiltModule`.
 Also move their files into the new `tilt/` folder
 
+<details>
+    <summary>show result</summary>
+
 ```ts
 // tilt/tilt.module.ts
 
@@ -161,6 +169,7 @@ Also move their files into the new `tilt/` folder
 export class TiltModule {}
 ```
 
+</details>
 you probably need to adjust some imports in the `MovieModule` as well as in `AppModule` now 
 
 serve the application and see if the refactoring went well!

@@ -4,7 +4,7 @@ In this exercise we want to build our first `Attribute Directive`.
 
 # Advanced way
 
-implement the attribute directive `TiltDirective`. The directive should `rotate` its host element
+implement the attribute directive `TiltDirective`. The directive should `rotate` its host element (hint: `ElementRef`)
 when _entering_ it with the mouse and reset the rotation when the mouse _leaves_ the host element.
 
 In addition to a simple rotation, the directive should rotate the element according to the position
@@ -22,7 +22,7 @@ ng g directive tilt
 
 ```ts
 
-this.elementRef.nativeElement.style.transform = 'rotate()';
+transform = 'rotate()';
 
 this.elementRef.nativeElement.addEventListener('event', callbackFn);
 
@@ -58,8 +58,6 @@ OR
 ng g d tilt
 ```
 
-go to `projects/movies/src/app/tilt.directive`
-
 ```ts
 
 @Directive({
@@ -76,6 +74,9 @@ for the `ElementRef` in the constructor.
 
 > Tip: type it with `HTMLElement`, you will have an easier life
 
+<details>
+    <summary>show result</summary>
+
 ```ts
 
 @Directive({
@@ -89,6 +90,8 @@ export class TiltDirective implements OnInit {
     
 }
 ```
+
+</details>
 
 setup the eventListeners
 
@@ -121,15 +124,9 @@ nativeElement.addEventListener('mouseenter', () => {
 
 ## use directive to adjust behavior of movie-card
 
-or to `projects/movies/src/movie-card/movie-card.component.html`
+apply the `tilt` directive to the `movie-card.component.html` template.
 
-```html
-<!-- movie-card.component.html -->
-<div class="movie-card" tilt>
-    <!-- template -->
-</div>
-
-```
+It should be applied to the `div.movie-card`.
 
 serve the application and test your result
 
@@ -140,7 +137,6 @@ ng serve
 ## implement the funk :-D
 
 now we want to add a more complex animation and tilt the movie-card according to the mouseposition on enter
-
 
 ```ts
 
