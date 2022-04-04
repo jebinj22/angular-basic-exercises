@@ -1,4 +1,4 @@
-# Exercise 5: structural directives, NgModule & HttpClient
+# Exercise: structural directives & HttpClient
 
 ## *ngIf to display missing-movie state
 
@@ -77,38 +77,6 @@ go to `projects/movies/src/app/app.component.scss`
   position: relative;
 }
 
-```
-
-## refactor to NgModule
-
-create `MovieModule`
-
-```bash
-ng generate module movie
-
-OR
-
-ng g m movie
-```
-
-move the following components to the `MovieModule` by adding them to the `declarations` and `exports`
-property of the `MovieModule`.
-Also move their files into the new `movie` folder
-
-* `MovieCardComponent`
-* `MovieImagePipe`
-
-> note that our *Directive is not working any longer, please ignore it for now or move it as well to the movie module
-
-```ts
-// movie/movie.module.ts
-
-@NgModule({
-    imports: [],
-    exports: [MovieCardComponent, MovieImagePipe],
-    declarations: [MovieCardComponent, MovieImagePipe]
-})
-export class MovieModule {}
 ```
 
 ## create MovieListComponent

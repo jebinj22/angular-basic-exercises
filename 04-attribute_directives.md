@@ -1,47 +1,48 @@
-# Exercise 4: Pipes and Directives
+# Exercise: Attribute Directives
 
-## implement movie-image pipe
+In this exercise we want to build our first `Attribute Directive`.
 
-create a `Pipe` to deliver the formatted image url for our movie-card component
+# Advanced way
+
+implement the attribute directive `TiltDirective`. The directive should `rotate` its host element
+when _entering_ it with the mouse and reset the rotation when the mouse _leaves_ the host element.
+
+In addition to a simple rotation, the directive should rotate the element according to the position
+the cursor entered the element.
+If the cursor enters from **left** => rotate to the **right** and vice versa.
+
+start by using the `ElementRef#nativeElement#addEventListener` methods and continue by implementing it
+with the help of `@HostListener` and `@HostBinding` for the respective events and bindings.
+
+## helper for advanced way
 
 ```bash
-ng generate pipe movie-image
-
-OR
-
-ng g p movie-image
+ng g directive tilt
 ```
-
-go to `projects/movies/src/app/movie-image.pipe.ts`
 
 ```ts
-@Pipe({
-    selector: 'movieImage'
-})
-export class MovieImagePipe implements PipeTransform {
-    // we keep the args for now, we may need them later
-    transform(value: string, ...args: unknown[]): string {
-        if (value) {
-            return `https://image.tmdb.org/t/p/w300${value}`;
-        }
-        return `assets/images/no_poster_available.jpg`;
-    }
+
+this.elementRef.nativeElement.style.transform = 'rotate()';
+
+this.elementRef.nativeElement.addEventListener('event', callbackFn);
+
+@HostListener('event', ['$event'])
+
+@HostListener('prop.val')
+
+/**
+ *
+ * returns 0 if entered from left, 1 if entered from right
+ */
+determineDirection(pos: number): 0 | 1 {
+    const width = this.el.nativeElement.clientWidth;
+    const middle = this.el.nativeElement.getBoundingClientRect().left + width / 2;
+    return (pos > middle ? 1 : 0);
 }
+
 ```
 
-## use pipe in movie-card
-
-go to `projects/movies/src/app/movie-card/movie-card.component.html`
-
-```html
-<!-- movie-card.component.html -->
-
-<img class="movie-image" [src]="movie.poster_path | movieImage">
-```
-
-try the pipe by setting the `poster_path` property in the `AppComponent` to an empty string `''`
-
-The poster should now be displaying the fallback image
+# Step by Step
 
 ## implement tilt directive
 
@@ -118,18 +119,11 @@ nativeElement.addEventListener('mouseenter', () => {
 });
 ```
 
-
 ## use directive to adjust behavior of movie-card
 
-go to `projects/movies/src/app/app.component.html`
 or to `projects/movies/src/movie-card/movie-card.component.html`
 
 ```html
-<!-- app.component.html -->
-<movie-card tilt></movie-card>
-
-<!-- or -->
-
 <!-- movie-card.component.html -->
 <div class="movie-card" tilt>
     <!-- template -->
@@ -174,11 +168,11 @@ ng serve
 
 now we want to refactor our directive to the `angular way`, yaay!
 
-initialize the HostListeners and HostBindings needed for to replace our manual eventListeners and move the code accordingly.
+initialize the HostListeners and HostBindings needed to replace our manual eventListeners and move the code accordingly.
 
 ```ts
 
-@HostListener('mouseenter')
+@HostListener('mouseenter', ['$event'])
 onMouseenter(event: MouseEvent) {
     
 }
