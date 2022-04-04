@@ -112,7 +112,7 @@ https://material.angular.io?theme=indigo-pink
 > for this to work you need to have added @angular/material with version 12 :) 
 
 ```bash
-ng update @angular/material --allowDirty
+ng update @angular/material --allow-dirty
 ```
 
 
