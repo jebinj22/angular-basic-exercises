@@ -94,12 +94,25 @@ as a bonus you might even want to try to fix the test case if it's failing for y
 ng add @angular/material@12
 ```
 
+the cli will aks you some questions about how to setup the material package.
+
+It doesn't matter what you choose for this exercise
+
+```bash
+? Choose a prebuilt theme name, or "custom" for a custom theme: Indigo/Pink        [ Preview: 
+https://material.angular.io?theme=indigo-pink
+ ] 
+? Set up global Angular Material typography styles? No   
+? Set up browser animations for Angular Material? No 
+
+```
+
 ## (update a dependency)
 
 > for this to work you need to have added @angular/material with version 12 :) 
 
 ```bash
-ng update @angular/material
+ng update @angular/material --allow-dirty
 ```
 
 

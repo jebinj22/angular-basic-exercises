@@ -8,6 +8,10 @@ and also create our first template expressions in the `AppComponent`.
 ```bash
 git clone git@github.com:push-based/angular-basic-040422.git
 
+# or if not work
+
+git clone https://github.com/push-based/angular-basic-040422.git
+
 cd angular-basic-040422
 
 npm install
