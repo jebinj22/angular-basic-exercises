@@ -89,10 +89,16 @@ export class MovieCardComponent {
 
 ### Bonus:
 
+remove the `MovieCardComponent` before you do this:
+
 try different schematics
 
 ```bash
-ng g c movie-card --inline
+ng g c movie-card --inline-style --inline-template --skipTests
+
+# or
+
+ng g c movie-card -s -t --skipTests
 
 ng g c movie-card --skipTests
 
