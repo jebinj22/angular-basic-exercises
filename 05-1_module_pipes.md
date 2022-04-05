@@ -82,7 +82,7 @@ ng g p movie-image
 
 ```ts
 @Pipe({
-    selector: 'movieImage'
+    name: 'movieImage'
 })
 export class MovieImagePipe implements PipeTransform {
     // we keep the args for now, we may need them later
