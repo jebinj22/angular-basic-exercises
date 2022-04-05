@@ -148,7 +148,11 @@ export class MovieModule {}
 now we want to create our first `SCAM`.
 
 ```bash
-ng m tilt 
+ng generate module tilt 
+
+# or 
+
+ng g m tilt 
 ```
 
 move the `TiltDirective` to the `TiltModule` by adding them to the `declarations` and `exports`
