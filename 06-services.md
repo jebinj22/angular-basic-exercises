@@ -346,6 +346,48 @@ ngOnInit(): void {
 
 </details>
 
+
+For everyone who struggles with importing modules, here the complete list of modules to import
+
+<details>
+    <summary> show module imports </summary>
+
+```ts
+// movie-detail-page.module.ts
+
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule, Routes } from '@angular/router';
+import { DetailGridModule } from '../../ui/component/detail-grid/detail-grid.module';
+import { SvgIconModule } from '../../ui/component/icons/icon.module';
+import { StarRatingModule } from '../../ui/pattern/star-rating/star-rating.module';
+import { MovieModule } from '../movie.module';
+import { MovieDetailPageComponent } from './movie-detail-page.component';
+
+const routes: Routes = [
+    {
+        path: '',
+        component: MovieDetailPageComponent,
+    },
+];
+
+@NgModule({
+    declarations: [MovieDetailPageComponent],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        DetailGridModule,
+        SvgIconModule,
+        MovieModule,
+        StarRatingModule,
+    ],
+})
+export class MovieDetailPageModule {}
+
+
+```
+</details>
+
 You don't need to mess around with the styling of the whole component, so please just copy these
 styles into the components' stylesheet file.
 
