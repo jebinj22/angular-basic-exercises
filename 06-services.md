@@ -644,7 +644,7 @@ For the `ui-star-rating` component you need to import the `StarRatingModule` fro
     <summary> show full solution </summary>
     
 ```ts
-// movie-list-page.component.ts
+// movie-detail-page.component.ts
 
 recommendations$: Observable<{ results: MovieModel[] }>;
 credits$: Observable<TMDBMovieCreditsModel>;
