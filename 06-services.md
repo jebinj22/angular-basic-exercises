@@ -640,6 +640,221 @@ For the `ui-star-rating` component you need to import the `StarRatingModule` fro
 </details>
 
 
-### Bonus: Create spoken languages pipe
+<details>
+    <summary> show full solution </summary>
+    
+```ts
+// movie-list-page.component.ts
+
+recommendations$: Observable<{ results: MovieModel[] }>;
+credits$: Observable<TMDBMovieCreditsModel>;
+movie$: Observable<TMDBMovieDetailsModel>;
+
+constructor(
+    private movieService: MovieService,
+    private activatedRoute: ActivatedRoute
+) {}
+
+ngOnInit(): void {
+    this.activatedRoute.params.subscribe((params) => {
+        this.movie$ = this.movieService.getMovieById(params.id);
+        this.credits$ = this.movieService.getMovieCredits(params.id);
+        this.recommendations$ = this.movieService.getMovieRecommendations(
+            params.id
+        );
+    });
+}
+```
+
+```html
+
+<div class="movie-detail-wrapper">
+  <ui-detail-grid *ngIf="(movie$ | async) as movie; else: loader">
+    <div detailGridMedia>
+      <img class="aspectRatio-2-3 fit-cover"
+           [src]="movie.poster_path | movieImage: 780"
+           [alt]="movie.title"
+           width="780px"
+           height="1170px">
+    </div>
+    <div detailGridDescription>
+      <header>
+        <h1>{{ movie.title }}</h1>
+        <h2>{{ movie.tagline }}</h2>
+      </header>
+      <section class="movie-detail--basic-infos">
+        <ui-star-rating
+          [rating]="movie.vote_average"
+          [showRating]="true"
+        ></ui-star-rating>
+        <div class="movie-detail--languages-runtime-release">
+          <strong>
+            {{ movie.spoken_languages[0]?.english_name }} /
+            {{ movie.runtime }} min /
+            {{ movie.release_date | date: 'Y' }}
+          </strong>
+        </div>
+      </section>
+      <section>
+        <h3>The Genres</h3>
+        <div class="movie-detail--genres">
+          <!-- class="movie-detail--genres-link" genre links -->
+          <a class="movie-detail--genres-link"
+               *ngFor="let genre of movie.genres">
+            <svg-icon name="genre"></svg-icon>
+            {{ genre.name }}
+          </a>
+        </div>
+      </section>
+      <section>
+        <h3>The Synopsis</h3>
+        <p>{{ movie.overview || 'Sorry, no overview available' }}</p>
+      </section>
+      <section>
+        <h3>The Cast</h3>
+        <div class="movie-detail--cast-list">
+          <div class="cast-list"
+               *ngIf="(credits$ | async) as credits">
+            <div class="movie-detail--cast-actor"
+                 *ngFor="let actor of credits.cast">
+              <img
+                loading="lazy"
+                [src]="
+                  actor?.profile_path
+                    ? 'https://image.tmdb.org/t/p/w185' + actor.profile_path
+                    : 'assets/images/no_poster_available.jpg'
+                "
+                [alt]="actor.name"
+                [title]="actor.name"
+              />
+            </div>
+            <!-- class="movie-detail--cast-actor" -->
+            <!-- <img
+                loading="lazy"
+                [src]="
+                  c?.profile_path
+                    ? 'https://image.tmdb.org/t/p/w185' + c.profile_path
+                    : 'assets/images/no_poster_available.jpg'
+                "
+                [alt]="c.name"
+                [title]="c.name"
+              />
+              -->
+          </div>
+        </div>
+      </section>
+      <section class="movie-detail--ad-section-links">
+        <!-- homepage -->
+        <a
+          class="btn"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Website
+          <svg-icon class="btn__icon" name="website"></svg-icon>
+
+        </a>
+        <!-- (ngIf) ? imdb_id -->
+        <a
+          class="btn"
+          target="_blank"
+          rel="noopener noreferrer"
+          [href]="'https://www.imdb.com/title/'"
+        >
+          IMDB
+          <svg-icon class="btn__icon" name="imdb"></svg-icon>
+        </a>
+        <!-- (ngIf) ? imdb_id -->
+        <a
+          class="btn"
+        >
+          Trailer
+          <svg-icon class="btn__icon" name="play"></svg-icon>
+        </a>
+        <!-- TODO: create dialog with iframe embed -->
+        <!-- back function -->
+        <button class="btn primary-button">
+          <svg-icon class="btn__icon" name="back" size="1em"></svg-icon>&nbsp;Back
+        </button>
+      </section>
+    </div>
+  </ui-detail-grid>
+</div>
+<div>
+  <header>
+    <h1>Recommended</h1>
+    <h2>Movies</h2>
+  </header>
+  <ng-container *ngIf="(recommendations$ | async) as recommendations; else: loader">
+
+    <movie-list
+      [movies]="recommendations.results"
+      *ngIf="recommendations.results.length > 0; else: noResult">
+    </movie-list>
+
+    <ng-template #noResult>
+      <div>No recommended movies</div>
+    </ng-template>
+
+  </ng-container>
+
+  <ng-template #loader>
+    <div class="loader"></div>
+  </ng-template>
+
+</div>
+
+
+```
+</details>
+
+
+### Bonus: improve movieImage pipe
+
+currently, the movie-image pipe always returns the image from the `w300` endpoint.
+For the detail view the image is way too small and it looks quite ugly.
+
+Please introduce parameter for the `MovieImagePipe` to control the width to be fetched.
+
+You can set a default to `300` if you like.
+
+You can choose on your own if you like to use a `number` or a `string` as input :)
+
+use `780` for the movie and check if the image quality improves!
+
+<details>
+    <summary> show solution </summary>
+
+```ts
+// movie-image.pipe.ts
+
+transform(value: string, width = 300): string {
+    if (value) {
+        return `https://image.tmdb.org/t/p/w${width}/${value}`;
+    }
+    return '/assets/images/no_poster_available.jpg';
+}
+```
+
+</details>
+
+### Bonus: use star-rating in movie-card component
+
+use the `ui-star-rating` component as well in the `MovieCardComponent`
+
+<details>
+    <summary></summary>
+
+```html
+<!-- movie-card.component.html -->
+
+<ui-star-rating [rating]="movie.vote_average"></ui-star-rating>
+```
+
+```ts
+
+
+```
+</details>
 
 
