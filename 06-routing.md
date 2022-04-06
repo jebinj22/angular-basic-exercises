@@ -55,6 +55,7 @@ Also remove the import to `MovieModule` in `AppModule` and replace it with `Movi
 
 ```ts
 // movie-list-page.module.ts
+import { NgModule } from '@angular/core';
 
 @NgModule({
     declarations: [
@@ -68,6 +69,9 @@ export class MovieListPageModule {}
 
 ```ts
 // movie-list-page.component.ts
+import { NgModule } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 movies$: Observable<{ results: MovieModel[]}>;
 
@@ -146,6 +150,7 @@ An invalid route though should end up in an error, we will fix that later.
 
 ```ts
 // app-routing.module.ts
+import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
     {
@@ -247,6 +252,7 @@ ng g c not-found-page
 ```
 
 ```ts
+import { NgModule } from '@angular/core';
 
 @NgModule({
   declarations: [NotFoundPageComponent],
@@ -258,6 +264,7 @@ export class NotFoundPageModule {}
 
 ```ts
 // app-routing.module.ts
+import { RouterModule, Routes } from '@angular/router';
 
 RouterModule.forRoot([
     // other configuration
@@ -314,6 +321,7 @@ Use `params.category` in order to dynamically generate a url to fetch the movies
 
 ```ts
 // app-routing.module.ts
+import { ActivatedRoute } from '@angular/router';
 
 this.activatedRoute.params.subscribe((params) => {
     
@@ -403,6 +411,7 @@ The configuration should point the path `''` to the respective component you wan
 
 ```ts
 // not-found-page.module.ts
+import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
     {
@@ -414,6 +423,7 @@ const routes: Routes = [
 
 ```ts
 // movie-list-page.module.ts
+import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
     {
