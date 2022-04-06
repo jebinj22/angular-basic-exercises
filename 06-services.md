@@ -117,7 +117,8 @@ Go to the `MovieListPageComponent`, inject the `MovieService` and replace it wit
 // movie-list-page.component.ts
 
 constructor(
-    private movieService: MovieService
+    private movieService: MovieService,
+    private activatedRoute: ActivatedRoute
 ) {
 }
 
