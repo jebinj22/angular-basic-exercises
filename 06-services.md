@@ -61,7 +61,7 @@ Information for the credits request:
 // movie.service.ts
 
 getMovieCredits(id: string): Observable<TMDBMovieCreditsModel> {
-    return this.httpClient.get<TMDBMovieDetailsModel>(
+    return this.httpClient.get<TMDBMovieCreditsModel>(
         `${tmdbBaseUrl}/3/movie/${id}/credits`,
         {
             headers: {
@@ -72,7 +72,7 @@ getMovieCredits(id: string): Observable<TMDBMovieCreditsModel> {
 }
 
 getMovieRecommendations(id: string): Observable<{ results: MovieModel[] }> {
-    return this.httpClient.get<TMDBMovieDetailsModel>(
+    return this.httpClient.get<{ results: MovieModel[] }>(
         `${tmdbBaseUrl}/3/movie/${id}/recommendations`,
         {
             headers: {
@@ -117,7 +117,8 @@ Go to the `MovieListPageComponent`, inject the `MovieService` and replace it wit
 // movie-list-page.component.ts
 
 constructor(
-    private movieService: MovieService
+    private movieService: MovieService,
+    private activatedRoute: ActivatedRoute
 ) {
 }
 
