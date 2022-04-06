@@ -672,7 +672,7 @@ ngOnInit(): void {
   <ui-detail-grid *ngIf="(movie$ | async) as movie; else: loader">
     <div detailGridMedia>
       <img class="aspectRatio-2-3 fit-cover"
-           [src]="movie.poster_path | movieImage: 780"
+           [src]="movie.poster_path | movieImage"
            [alt]="movie.title"
            width="780px"
            height="1170px">
