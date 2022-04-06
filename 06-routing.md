@@ -320,7 +320,7 @@ Use `params.category` in order to dynamically generate a url to fetch the movies
     <summary>show solution</summary>
 
 ```ts
-// app-routing.module.ts
+// movie-list-page.component.ts
 import { ActivatedRoute } from '@angular/router';
 
 this.activatedRoute.params.subscribe((params) => {
