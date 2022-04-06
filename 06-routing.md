@@ -454,16 +454,39 @@ root configuration.
     <summary>show solution</summary>
 
 ```ts
-// app.module.ts
+// app-routing.module.ts
 
-{
-    path: 'list/:category',
-        loadChildren: () => import('./movie/movie-list-page/movie-list-page.module').then(m => m.MovieListPageModule)
-},
-{
-    path: '**',
-        loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule)
-},
+const routes: Routes = [
+    {
+        path: 'list/:category',
+        loadChildren: () => {
+            return import('./movie/movie-list-page/movie-list-page.module').then(
+                (m) => m.MovieListPageModule
+            );
+        },
+    },
+    {
+        path: '',
+        redirectTo: 'list/popular',
+        pathMatch: 'full',
+    },
+    {
+        path: '**',
+        loadChildren: () => {
+            return import('./not-found-page/not-found-page.module').then(
+                (m) => m.NotFoundPageModule
+            );
+        },
+    },
+];
+
+@NgModule({
+    declarations: [],
+    imports: [RouterModule.forRoot(routes)],
+    exports: [RouterModule],
+})
+export class AppRoutingModule {}
+
 ```
 
 </details>
