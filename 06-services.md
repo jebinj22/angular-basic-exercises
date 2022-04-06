@@ -19,6 +19,8 @@ create a new service `MovieService` in the `movie` folder. It should be provided
 you should end up having the following `MovieService`
 
 ```ts
+import { Injectable } from '@angular/core';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -43,7 +45,12 @@ Information for the byId request:
 
 Information for the recommendations request:
 * [`/movie/${movieId}/recommendations`](https://developers.themoviedb.org/3/movies/get-movie-recommendations)
-* returns `{ results: MovieModel[] }` (`shared/model/movie-details.model.ts`)
+* returns `{ results: MovieModel[] }` (`shared/model/movie-recommendations.model.ts`)
+
+Information for the credits request:
+* [`/movie/${movieId}/credits`](https://developers.themoviedb.org/3/movies/get-movie-credits)
+* returns `{ results: TMDBMovieCreditsModel }` (`shared/model/movie-credits.model.ts`)
+* we are only interested in the `cast: TMDBMovieCastModel` property for now though :)
   
 
 
@@ -52,6 +59,17 @@ Information for the recommendations request:
 
 ```ts
 // movie.service.ts
+
+getMovieCredits(id: string): Observable<TMDBMovieCreditsModel> {
+    return this.httpClient.get<TMDBMovieDetailsModel>(
+        `${tmdbBaseUrl}/3/movie/${id}/credits`,
+        {
+            headers: {
+                Authorization: `Bearer ${tmdbApiReadAccessKey}`,
+            },
+        }
+    );
+}
 
 getMovieRecommendations(id: string): Observable<{ results: MovieModel[] }> {
     return this.httpClient.get<TMDBMovieDetailsModel>(
@@ -186,6 +204,7 @@ serve the application and check in the network tab if the header is still set an
 
 Implement an interceptor which listens to the response of a request instead.
 In case of an error, it should at least `console.error` a message.
+In best case it would redirect the user to the `not-found` route when the error is of type `404`.
 If you like, you can also send an `alert` to the user.
 
 When u are done implementing it, try to produce an error. You can do it either with `rxjs`, or you can think about a way
@@ -197,6 +216,7 @@ useful resources:
 * [alert](https://developer.mozilla.org/de/docs/Web/API/Window/alert)
 * [throwError](https://rxjs.dev/api/index/function/throwError)
 * [catchError](https://rxjs.dev/api/operators/catchError)
+
 
 ## implement MovieDetailPage
 
@@ -270,6 +290,7 @@ With the `id` from our params we now can make the request to the `MovieDetail` a
 
 make sure to provide two `Observable` values for the template:
 * `movie$: Observable<TMBD...>`
+* `credits$: Observable<TMDBMovieCreditsModel>`
 * `recommendations$: Observable<{ results: MovieModel[] }>`
 
 <details>
@@ -279,6 +300,7 @@ make sure to provide two `Observable` values for the template:
 // movie-detail-page.component.ts
 
 movie$: Observable<TMDBMovieDetailsModel>;
+credits$: Observable<TMDBMovieCreditsModel>;
 recommendations$: Observable<{ results: MovieModel[] }>;
 
 constructor(
@@ -291,11 +313,266 @@ ngOnInit(): void {
         if (params.id) {
             this.movie$ = this.movieService.getMovie(params.id);
             this.recommendations$ = this.movieService.getMovieRecommendations(params.id);
+            this.credits$ = this.movieService.getMovieCredits(params.id);
         }
-    })
+    });
 }
 ```
 
 </details>
 
+You don't need to mess around with the styling of the whole component, so please just copy these
+styles into the components' stylesheet file.
+
+<details>
+    <summary> show styles </summary>
+
+```scss
+@import "../../ui/token/mixins/flex";
+@import "../../ui/component/aspect-ratio/aspect-ratio";
+
+:host {
+  width: 100%;
+  display: block;
+}
+
+.loader {
+  position: absolute;
+  z-index: 200;
+  top: 250px;
+}
+
+.movie-detail-wrapper {
+  min-height: 500px;
+}
+
+.movie-detail {
+
+  @media only screen and (max-width: 1500px) {
+    &--grid-item {
+      padding: 3rem;
+    }
+  }
+
+  &--genres {
+    @include d-flex-v;
+    flex-wrap: wrap;
+
+    &-link {
+      &:not(:last-child) {
+        margin-right: 2rem;
+      }
+
+      @include d-flex-v;
+      padding: 0.5rem 0;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+  }
+
+  &--ad-section-links {
+    .section--content {
+      @include d-flex;
+      margin-right: auto;
+    }
+
+    .btn {
+      margin-right: 2rem;
+      @media only screen and (max-width: 1300px) {
+        margin-right: 1rem;
+      }
+    }
+
+    > .btn:last-child {
+      margin-right: 0rem;
+      float: right;
+    }
+  }
+
+  &--basic-infos {
+    @include d-flex-v;
+    justify-content: space-between;
+  }
+
+  &--cast-list {
+    @include d-flex;
+    flex-direction: row;
+    margin: 0 20px;
+    width: 100%;
+    height: 50px;
+    contain: strict;
+    overflow: hidden;
+  }
+}
+
+.cast-list {
+  width: 100%;
+  display: flex;
+  overflow-x: scroll;
+  position: relative;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+}
+
+.cast-list::-webkit-scrollbar {
+  display: none;
+}
+
+.cast-list {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.cast-list--btn {
+  background: transparent;
+  border: 0;
+  z-index: 2;
+  font-size: 40px;
+  text-decoration: none;
+  cursor: pointer;
+  color: rgb(102, 102, 102);
+}
+
+.movie-detail--languages-runtime-release {
+  color: var(--palette-warning-main);
+  text-transform: uppercase;
+}
+
+.movie-detail--section {
+  margin-bottom: 3rem;
+}
+
+.movie-detail--cast-actor {
+  display: block;
+  height: auto;
+  width: 70px;
+  flex-shrink: 0;
+
+  img {
+    display: block;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--theme-borderRadius-circle);
+    object-fit: cover;
+    margin: 0 auto;
+  }
+}
+
+```
+</details>
+
 Now we should be ready to go to implement our template.
+
+As a basis I will provide you a raw skeleton with everything you need to apply all the needed view bindings yourself.
+
+For the `ui-star-rating` component you need to import the `StarRatingModule` from `ui/components/star-rating`
+
+<details>
+    <summary> show template </summary>
+
+```html
+<div class="movie-detail-wrapper">
+  <!-- use movie$ -->
+  <!-- show loader when there is no movie -->
+  <ui-detail-grid>
+    <div detailGridMedia>
+      <!-- img w780, h1170 class="aspectRatio-2-3 fit-cover" -->
+
+    </div>
+    <div detailGridDescription>
+      <header>
+        <!-- h1 title -->
+        <!-- h2 tagline -->
+      </header>
+      <section class="movie-detail--basic-infos">
+        <!-- ui-star-rating -->
+        <!-- vote_average -->
+        <div class="movie-detail--languages-runtime-release">
+          <!-- <strong> languages_runtime_release -->
+        </div>
+      </section>
+      <section>
+        <h3>The Genres</h3>
+        <div class="movie-detail--genres">
+          <!-- "movie-detail--genres-link genre links -->
+        </div>
+      </section>
+      <section>
+        <h3>The Synopsis</h3>
+        <!-- p overview || 'not available text' -->
+      </section>
+      <section>
+        <h3>The Cast</h3>
+        <div class="movie-detail--cast-list">
+          <div class="cast-list">
+            <!-- credits$ -->
+            <!-- class="movie-detail--cast-actor" -->
+            <!-- <img
+                loading="lazy"
+                [src]="
+                  c?.profile_path
+                    ? 'https://image.tmdb.org/t/p/w185' + c.profile_path
+                    : 'assets/images/no_poster_available.jpg'
+                "
+                [alt]="c.name"
+                [title]="c.name"
+              />
+              -->
+          </div>
+        </div>
+      </section>
+      <section class="movie-detail--ad-section-links">
+        <!-- homepage -->
+        <a
+          class="btn"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Website
+          <svg-icon class="btn__icon" name="website"></svg-icon>
+
+        </a>
+        <!-- (ngIf) ? imdb_id -->
+        <a
+          class="btn"
+          target="_blank"
+          rel="noopener noreferrer"
+          [href]="'https://www.imdb.com/title/'"
+        >
+          IMDB
+          <svg-icon class="btn__icon" name="imdb"></svg-icon>
+        </a>
+        <!-- (ngIf) ? imdb_id -->
+        <a
+          class="btn"
+        >
+          Trailer
+          <svg-icon class="btn__icon" name="play"></svg-icon>
+        </a>
+        <!-- TODO: create dialog with iframe embed -->
+        <!-- back function -->
+        <button class="btn primary-button">
+          <svg-icon class="btn__icon" name="back" size="1em"></svg-icon>&nbsp;Back
+        </button>
+      </section>
+    </div>
+  </ui-detail-grid>
+</div>
+<div>
+  <header>
+    <h1>Recommended</h1>
+    <h2>Movies</h2>
+  </header>
+
+  <!-- recommendations$ movie list with loader -->
+
+<!--  <movie-list></movie-list>-->
+
+</div>
+
+```
+
+</details>
+
+
+### Bonus: Adjust movieImage pipe
