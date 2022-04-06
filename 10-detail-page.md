@@ -23,7 +23,9 @@ const routes: Routes = [{
     component: MovieDetailPageComponent
 }];
 
-RouterModule.forChild(routes)
+imports: [
+    RouterModule.forChild(routes)
+]
 
 ```
 
