@@ -278,6 +278,30 @@ a parameter for the id :)
 
 </details>
 
+### Implement navigation
+
+We also need a way to navigate to the `MovieDetailPageComponent`.
+You can consider using the `onMovieClick` callback for it together with `Router#navigate`.
+
+Another solution is to use the `routerLink` directive on a `movie-card` in the template of `MovieListComponent`
+
+
+<details>
+    <summary> show solution </summary>
+
+```ts
+// movie-list.component.ts
+
+constructor(private router: Router) {}
+
+onMovieClick(movie: MovieModel) {
+    this.router.navigate(['/movie', movie.id]);
+}
+
+```
+
+</details>
+
 
 ### Implement MovieDetailPageComponent
 
