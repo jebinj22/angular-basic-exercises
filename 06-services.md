@@ -481,15 +481,6 @@ styles into the components' stylesheet file.
   scroll-snap-type: x mandatory;
 }
 
-.cast-list::-webkit-scrollbar {
-  display: none;
-}
-
-.cast-list {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
 .cast-list--btn {
   background: transparent;
   border: 0;
