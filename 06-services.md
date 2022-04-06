@@ -555,13 +555,20 @@ For the `ui-star-rating` component you need to import the `StarRatingModule` fro
         <!-- ui-star-rating -->
         <!-- vote_average -->
         <div class="movie-detail--languages-runtime-release">
-          <!-- <strong> languages_runtime_release -->
+            <strong>
+                <!-- spoken_languages[0]?.english_name --> /
+                <!-- runtime --> /
+                <!-- release_date | date: 'Y' -->
+            </strong>
         </div>
       </section>
       <section>
         <h3>The Genres</h3>
         <div class="movie-detail--genres">
-          <!-- "movie-detail--genres-link genre links -->
+          <!-- a class="movie-detail--genres-link" *ngFor="genres" -->
+            <a class="movie-detail--genres-link">
+                <svg-icon name="genre"></svg-icon>
+            </a>
         </div>
       </section>
       <section>
@@ -642,4 +649,6 @@ For the `ui-star-rating` component you need to import the `StarRatingModule` fro
 </details>
 
 
-### Bonus: Adjust movieImage pipe
+### Bonus: Create spoken languages pipe
+
+
